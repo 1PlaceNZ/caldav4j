@@ -45,7 +45,21 @@ public class CalendarDataProperty extends BaseProperty {
     private CalendarBuilder getCalendarBuilderInstance(){
         CalendarBuilder builder = calendarBuilderThreadLocal.get();
         if (builder == null){
-            builder = new CalendarBuilder();
+            CalendarParser parser = CalendarParserFactory.getInstance().createParser();
+            PropertyFactoryRegistry propertyFactoryRegistry = new PropertyFactoryRegistry();
+            propertyFactoryRegistry.register(WrTimezone.PROPERTY_NAME, WrTimezone.FACTORY);
+            propertyFactoryRegistry.register(WrCalName.PROPERTY_NAME, WrCalName.FACTORY);
+            propertyFactoryRegistry.register(Acknowledged.PROPERTY_NAME,Acknowledged.FACTORY);
+            propertyFactoryRegistry.register(AppleDefaultAlarm.PROPERTY_NAME,AppleDefaultAlarm.FACTORY);
+
+            ParameterFactoryRegistry parameterFactoryRegistry = new ParameterFactoryRegistry();
+
+            TimeZoneRegistry tzRegistry = TimeZoneRegistryFactory.getInstance().createRegistry();
+
+            builder = new CalendarBuilder(parser, propertyFactoryRegistry, parameterFactoryRegistry, tzRegistry);
+
+            //builder = new CalendarBuilder();
+
             calendarBuilderThreadLocal.set(builder);
         }
         return builder;
